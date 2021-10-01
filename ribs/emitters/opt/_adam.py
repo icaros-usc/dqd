@@ -33,7 +33,7 @@ class AdamOpt:
         self.beta1 = betas[0]
         self.beta2 = betas[1]
     
-        self.reset(theta0)
+        self.reset(np.copy(theta0))
 
     def reset(self, theta0):
         self.theta = theta0
@@ -50,5 +50,4 @@ class AdamOpt:
     def step(self, grad):
         self.t += 1
         step = self._compute_step(grad)
-        # ratio = np.linalg.norm(step) / (np.linalg.norm(self.theta) + self.epsilon)
         self.theta += step

@@ -46,7 +46,6 @@ def compute_clip_losses(device, c_net, img, prompts):
     return 1/img_logits * 100
 
 def compute_prompts(device, latent_code, g_net, c_net, prompts, img_batch_size=37):
-    
 
     imgs = []
     for i in range(0, len(latent_code), img_batch_size):
@@ -229,7 +228,7 @@ def run_experiment(algorithm,
                    trial_id,
                    clip_model,
                    generator,
-				   device,
+                   device,
                    dim=512,
                    init_pop=100,
                    itrs=10000,

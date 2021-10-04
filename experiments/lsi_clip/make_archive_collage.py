@@ -21,6 +21,7 @@ archive_filename = 'logs/cma_mega_adam/trial_0/archive_010000.pkl'
 # min and max index for rows then columns (row major).
 # The archive is shape (200, 200) indexed from [0, 200).
 archive_dims = (200, 200)
+#archive_index_range = ((110, 200), (95, 200))
 archive_index_range = ((90, 200), (90, 200))
 # Measure ranges
 measure_ranges = ((0,6), (0,6))
@@ -55,17 +56,20 @@ for j in reversed(range(picture_frequency[1])):
         query_string += f"{index_j_lower} <= index_1 & index_1 <= {index_j_upper}" 
         print(query_string)
         df_cell = df.query(query_string)
-        sol = df_cell.iloc[df_cell['objective'].argmax()]
-        print(sol)
+        
+        if not df_cell.empty:
 
-        latent_code = torch.tensor(sol[5:].values, dtype=torch.float32, device=device)
-        latents = torch.nn.Parameter(latent_code, requires_grad=False)
-        dlatents = latents.repeat(1,18,1)
+            sol = df_cell.iloc[df_cell['objective'].argmax()]
+            print(sol)
 
-        img = g_synthesis(dlatents)
-        img = (img.clamp(-1, 1) + 1) / 2.0 # Normalize from [0,1]
-        img = img[0].detach().cpu()
-        imgs.append(img)
+            latent_code = torch.tensor(sol[5:].values, dtype=torch.float32, device=device)
+            latents = torch.nn.Parameter(latent_code, requires_grad=False)
+            dlatents = latents.repeat(1,18,1)
+
+            img = g_synthesis(dlatents)
+            img = (img.clamp(-1, 1) + 1) / 2.0 # Normalize from [0,1]
+            img = img[0].detach().cpu()
+            imgs.append(img)
 
 import matplotlib.pyplot as plt
 from torchvision.utils import make_grid
@@ -75,8 +79,10 @@ img_grid = make_grid(imgs, nrow=picture_frequency[0], padding=0)
 img_grid = np.transpose(img_grid.cpu().numpy(), (1,2,0))
 plt.imshow(img_grid)
 
-plt.xlabel("A man with blue eyes.")
-plt.ylabel("A person with red hair.")
+plt.xlabel("A woman with long blonde hair.")
+plt.ylabel("A small child.")
+#plt.xlabel("A man with blue eyes.")
+#plt.ylabel("A person with red hair.")
 
 def create_archive_tick_labels(axis_range, measure_range, dim, num_ticks):
     low_pos = axis_range[0] / dim

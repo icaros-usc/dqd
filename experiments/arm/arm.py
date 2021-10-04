@@ -80,10 +80,15 @@ def create_optimizer(algorithm, dim, link_lengths, seed):
     batch_size = 36
     num_emitters = 1
 
+    if algorithm in ["og_map_elites_ind", "og_map_elites_line_ind"]:
+        num_emitters = 2
+
     # Create archive.
     if algorithm in [
             "map_elites", "map_elites_line", "cma_me_imp",
-            "og_map_elites", "omg_mega", "cma_mega", "cma_mega_adam",
+            "og_map_elites", "og_map_elites_line",
+            "og_map_elites_ind", "og_map_elites_line_ind",
+            "omg_mega", "cma_mega", "cma_mega_adam",
     ]:
         archive = GridArchive((100, 100), bounds, seed=seed)
     else:
@@ -122,6 +127,57 @@ def create_optimizer(algorithm, dim, link_lengths, seed):
                             bounds=None,
                             batch_size=batch_size // 2,
                             seed=s) for s in emitter_seeds
+        ]
+    elif algorithm in ["og_map_elites_ind"]:
+        emitters = [
+            GradientEmitter(archive,
+                            initial_sol,
+                            sigma0=0.0,
+                            sigma_g=100.0,
+                            measure_gradients=False,
+                            normalize_gradients=False,
+                            bounds=None,
+                            batch_size=batch_size // 3,
+                            seed=emitter_seeds[0])
+        ] + [
+            GaussianEmitter(archive,
+                            initial_sol,
+                            0.1,
+                            batch_size=batch_size // 3,
+                            seed=emitter_seeds[1])
+        ]
+    elif algorithm in ["og_map_elites_line"]:
+        emitters = [
+            GradientEmitter(archive,
+                            initial_sol,
+                            sigma0=0.1,
+                            sigma_g=100.0,
+                            line_sigma=0.2,
+                            operator_type='isolinedd',
+                            measure_gradients=False,
+                            normalize_gradients=False,
+                            bounds=None,
+                            batch_size=batch_size // 2,
+                            seed=s) for s in emitter_seeds
+        ]
+    elif algorithm in ["og_map_elites_line_ind"]:
+        emitters = [
+            GradientEmitter(archive,
+                            initial_sol,
+                            sigma0=0.0,
+                            sigma_g=100.0,
+                            measure_gradients=False,
+                            normalize_gradients=False,
+                            bounds=None,
+                            batch_size=batch_size // 3,
+                            seed=emitter_seeds[0])
+        ] + [
+            IsoLineEmitter(archive,
+                           initial_sol,
+                           iso_sigma=0.1,
+                           line_sigma=0.2,
+                           batch_size=batch_size // 3,
+                           seed=emitter_seeds[1])
         ]
     elif algorithm in ["omg_mega"]:
         emitters = [
@@ -212,8 +268,16 @@ def run_experiment(algorithm,
 
     link_lengths = np.ones(dim)
     
-    is_init_pop = algorithm in ['og_map_elites', 'omg_mega', 'map_elites', 'map_elites_line']
-    is_dqd = algorithm in ['og_map_elites', 'omg_mega', 'cma_mega', 'cma_mega_adam']
+    is_init_pop = algorithm in [
+        'og_map_elites', 'og_map_elites_line',
+        'og_map_elites_ind', 'og_map_elites_line_ind',
+        'omg_mega', 'map_elites', 'map_elites_line',
+    ]
+    is_dqd = algorithm in [
+        'og_map_elites', 'og_map_elites_line',
+        'og_map_elites_ind', 'og_map_elites_line_ind',
+        'omg_mega', 'cma_mega', 'cma_mega_adam'
+    ]
 
     optimizer = create_optimizer(algorithm, dim, link_lengths, seed)
     archive = optimizer.archive

@@ -24,7 +24,11 @@ class GradientEmitter(EmitterBase):
         sigma_g (float): A step-size for the gradient in the gradient step. If measure
             gradients are used, sigma_g is the standard deviation of Gaussian noise
             used to sample gradient coefficients.
+        line_sigma (float): The theta_2 parameter for a Iso+LineDD operator.
         measure_gradients (bool): Signals if measure gradients will be used.
+        normalize_gradients (bool): Sets if gradients should be normalized before steps.
+        operator_type (str): Either 'isotropic' or 'iso_line_dd' to mark the operator type 
+            for intermediate operations. Defaults to 'isotropic'.
         bounds (None or array-like): Bounds of the solution space. Solutions are
             clipped to these bounds. Pass None to indicate there are no bounds.
             Alternatively, pass an array-like to specify the bounds for each
@@ -43,8 +47,10 @@ class GradientEmitter(EmitterBase):
                  x0,
                  sigma0=0.1,
                  sigma_g=0.05,
+                 line_sigma=0.0,
                  measure_gradients=False,
                  normalize_gradients=False,
+                 operator_type='isotropic',
                  bounds=None,
                  batch_size=64,
                  seed=None):
@@ -54,6 +60,8 @@ class GradientEmitter(EmitterBase):
         self._sigma0 = archive.dtype(sigma0) if isinstance(
             sigma0, (float, np.floating)) else np.array(sigma0)
         self._sigma_g = archive.dtype(sigma_g)
+        self._line_sigma = line_sigma
+        self._use_isolinedd = operator_type != 'isotropic'
         self._measure_gradients = measure_gradients
         self._normalize_gradients = normalize_gradients
 
@@ -80,6 +88,12 @@ class GradientEmitter(EmitterBase):
     def batch_size(self):
         """int: Number of solutions to return in :meth:`ask`."""
         return self._batch_size
+
+    @staticmethod
+    @jit(nopython=True)
+    def _ask_solutions_numba(parents, line_gaussian, directions):
+        """Numba helper for calculating solutions."""
+        return parents + line_gaussian * directions
 
     @staticmethod
     @jit(nopython=True)
@@ -116,13 +130,32 @@ class GradientEmitter(EmitterBase):
                     for _ in range(self._batch_size)
                 ]
 
-            noise = self._rng.normal(
-                scale=self._sigma0,
-                size=(self._batch_size, self.solution_dim),
-            ).astype(self.archive.dtype)
+            if self._use_isolinedd:
+                noise = self._rng.normal(
+                    scale=self._sigma0,
+                    size=(self._batch_size, self.solution_dim),
+                ).astype(self.archive.dtype)
 
-            self._parents = self._ask_clip_helper(np.asarray(parents), noise,
-                                         self.lower_bounds, self.upper_bounds)
+                directions = [(self.archive.get_random_elite()[0] - parents[i])
+                              for i in range(self._batch_size)]
+                line_gaussian = self._rng.normal(
+                    scale=self._line_sigma,
+                    size=(self._batch_size, 1),
+                ).astype(self.archive.dtype)
+
+                solutions = self._ask_solutions_numba(np.asarray(parents), line_gaussian, 
+                                                      np.asarray(directions))
+                self._parents = self._ask_clip_helper(solutions, noise, self.lower_bounds,
+                                     self.upper_bounds)
+            else:
+                noise = self._rng.normal(
+                    scale=self._sigma0,
+                    size=(self._batch_size, self.solution_dim),
+                ).astype(self.archive.dtype)
+
+                self._parents = self._ask_clip_helper(np.asarray(parents), noise,
+                                             self.lower_bounds, self.upper_bounds)
+
             return self._parents
             
         if self._measure_gradients:

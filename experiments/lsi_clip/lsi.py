@@ -243,6 +243,16 @@ def run_experiment(algorithm,
     if not logdir.is_dir():
         logdir.mkdir()
 
+    # Print all intermediate faces
+    gen_output_dir = os.path.join('generations')
+    logdir = Path(gen_output_dir)
+    if not logdir.is_dir():
+        logdir.mkdir()
+    gen_output_dir = os.path.join('generations', f"trial_{trial_id}")
+    logdir = Path(gen_output_dir)
+    if not logdir.is_dir():
+        logdir.mkdir()
+
     # Create a new summary file
     summary_filename = os.path.join(s_logdir, f"summary.csv")
     if os.path.exists(summary_filename):
@@ -257,8 +267,10 @@ def run_experiment(algorithm,
     optimizer = create_optimizer(algorithm, dim, seed)
     archive = optimizer.archive
 
-    objective_prompt = 'Elon Musk with short hair.'
-    measure_prompts = ['An man with blue eyes.', 'A person with red hair.']
+    objective_prompt = 'A photo of Beyonce'
+    measure_prompts = ['A woman with long blonde hair.', 'A small child.']
+    #objective_prompt = 'Elon Musk with short hair.'
+    #measure_prompts = ['An man with blue eyes.', 'A person with red hair.']
     all_prompts = [objective_prompt] + measure_prompts
 
     best = -1000
@@ -337,6 +349,17 @@ def run_experiment(algorithm,
             progress()
 
             print('best', best, best_gen)
+
+            if itr % 5 == 0:
+                best_index = np.argmax(objs)
+                latent_code = latent_codes[best_index, :]
+
+                latents = torch.nn.Parameter(latent_code, requires_grad=False)
+                dlatents = latents.repeat(1,18,1)
+
+                img = generator(dlatents)
+                img = tensor_to_pil_img(img)
+                img.save(os.path.join(gen_output_dir, f'{itr}.png'))
 
             # Save the archive at the given frequency.
             # Always save on the final iteration.

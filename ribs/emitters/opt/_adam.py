@@ -9,7 +9,7 @@ class GradientAscentOpt:
 
         self.dim = len(theta0)
         self.stepsize = stepsize
-        self.reset(theta0)
+        self.reset(np.copy(theta0))
 
     def reset(self, theta0):
         self.theta = theta0

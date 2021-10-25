@@ -1,7 +1,9 @@
 
 # Differentiable Quality Diversity
 
-This repository is the official implementation of Differentiable Quality Diversity.
+## The official Python implementation of the NeurIPS 2021 paper
+
+This repository replicates the supplemental material for the [Differentiable Quality Diversity](https://arxiv.org/abs/2106.03894) paper.
 
 The project contains a modified version of [pyribs](https://pyribs.org) a quality diversity optimization library. All MEGA variants are implemented in pyribs. The `GradientEmitter` implements both the OG-MAP-Elites and the OMG-MEGA algorithms. The `GradientImprovementEmitter` implements the CMA-MEGA algorithm.
 

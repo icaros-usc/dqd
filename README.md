@@ -1,7 +1,4 @@
-
-# Differentiable Quality Diversity
-
-## The official Python implementation of the NeurIPS 2021 paper
+# Differentiable Quality Diversity<br><sub>The official Python implementation of the NeurIPS 2021 paper</sub>
 
 This repository replicates the supplemental material for the [Differentiable Quality Diversity](https://arxiv.org/abs/2106.03894) paper.
 

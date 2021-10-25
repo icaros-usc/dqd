@@ -36,15 +36,16 @@ CLIP automatically installs with the conda environment.
 
 For each experiment you pick an identifier for the algorithm you want to run.
 
-| Quality Diversity Algorithm | Identifier      |
-| --------------------------- | --------------: |
-| MAP-Elites                  | map_elites      |
-| MAP-Elites (line)           | map_elites_line |
-| CMA-ME                      | cma_me_imp      |
-| OG-MAP-Elites               | og_map_elites   |
-| OMG-MEGA                    | omg_mega        |
-| CMA-MEGA                    | cma_mega        |
-| CMA-MEGA (Adam)             | cma_mega_adam   |
+| Quality Diversity Algorithm | Identifier         |
+| --------------------------- | ------------------:|
+| MAP-Elites                  | map_elites         |
+| MAP-Elites (line)           | map_elites_line    |
+| CMA-ME                      | cma_me_imp         |
+| OG-MAP-Elites               | og_map_elites      |
+| OG-MAP-Elites (line)        | og_map_elites_line |
+| OMG-MEGA                    | omg_mega           |
+| CMA-MEGA                    | cma_mega           |
+| CMA-MEGA (Adam)             | cma_mega_adam      |
 
 ### Linear Projection (sphere)
 
@@ -181,6 +182,18 @@ The following tables contain the reported results from the DQD paper.
 
 See the paper and supplementary materials for full data and standard error bars.
 
+
+## OG-MAP-Elites Ablations
+
+To run ablation experiments for OG-MAP-Elites, pick from the following identifiers
+
+
+| Quality Diversity Algorithm | Identifier             |
+| --------------------------- | ----------------------:|
+| OG-MAP-Elites               | og_map_elites          |
+| OG-MAP-Elites (line)        | og_map_elites_line     |
+| OG-MAP-Elites               | og_map_elites_ind      |
+| OG-MAP-Elites (line)        | og_map_elites_line_ind |
 
 ## License
 

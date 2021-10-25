@@ -184,15 +184,15 @@ See the paper and supplementary materials for full data and standard error bars.
 
 ## OG-MAP-Elites Ablations
 
-To run ablation experiments for OG-MAP-Elites, pick from the following identifiers
+To run the independent operator ablation experiments for OG-MAP-Elites, pick from the following identifiers
 
 
 | Quality Diversity Algorithm | Identifier             |
 | --------------------------- | ----------------------:|
 | OG-MAP-Elites               | og_map_elites          |
 | OG-MAP-Elites (line)        | og_map_elites_line     |
-| OG-MAP-Elites               | og_map_elites_ind      |
-| OG-MAP-Elites (line)        | og_map_elites_line_ind |
+| OG-MAP-Elites†              | og_map_elites_ind      |
+| OG-MAP-Elites (line)†       | og_map_elites_line_ind |
 
 ## License
 

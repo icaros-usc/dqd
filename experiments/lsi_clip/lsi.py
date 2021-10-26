@@ -348,10 +348,10 @@ def run_experiment(algorithm,
 
                 # Save a full archive for analysis.
                 df = archive.as_pandas(include_solutions = final_itr)
-                df.to_pickle(os.path.join(s_logdir, f"archive_{itr:06d}.pkl"))
+                df.to_pickle(os.path.join(s_logdir, f"archive_{itr:08d}.pkl"))
 
                 # Save a heatmap image to observe how the trial is doing.
-                save_heatmap(archive, os.path.join(s_logdir, f"heatmap_{itr:06d}.png"))
+                save_heatmap(archive, os.path.join(s_logdir, f"heatmap_{itr:08d}.png"))
 
             # Update the summary statistics for the archive
             if (itr > 0 and itr % log_freq == 0) or final_itr:

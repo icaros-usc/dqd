@@ -124,7 +124,7 @@ def create_optimizer(algorithm, dim, seed):
     # Create archive.
     if algorithm in [
             "map_elites", "map_elites_line", "cma_me_imp",
-            "og_map_elites", "omg_mega", "cma_mega", "cma_mega_adam",
+            "cma_mega", "cma_mega_adam",
     ]:
         archive = GridArchive((200, 200), bounds, seed=seed)
     else:
@@ -151,28 +151,6 @@ def create_optimizer(algorithm, dim, seed):
                            line_sigma=0.2,
                            batch_size=batch_size,
                            seed=s) for s in emitter_seeds
-        ]
-    elif algorithm in ["og_map_elites"]:
-        emitters = [
-            GradientEmitter(archive,
-                            initial_sol,
-                            sigma0=0.2,
-                            sigma_g=0.2,
-                            measure_gradients=False,
-                            bounds=None,
-                            batch_size=batch_size // 2,
-                            seed=s) for s in emitter_seeds
-        ]
-    elif algorithm in ["omg_mega"]:
-        emitters = [
-            GradientEmitter(archive,
-                            initial_sol,
-                            sigma0=0.0,
-                            sigma_g=0.2,
-                            measure_gradients=True,
-                            bounds=None,
-                            batch_size=batch_size // 2,
-                            seed=s) for s in emitter_seeds
         ]
     elif algorithm in ["cma_mega"]:
         emitters = [
@@ -261,8 +239,8 @@ def run_experiment(algorithm,
         writer = csv.writer(summary_file)
         writer.writerow(['Iteration', 'QD-Score', 'Coverage', 'Maximum', 'Average'])
 
-    is_init_pop = algorithm in ['og_map_elites', 'omg_mega', 'map_elites', 'map_elites_line']
-    is_dqd = algorithm in ['og_map_elites', 'omg_mega', 'cma_mega', 'cma_mega_adam']
+    is_init_pop = algorithm in ['map_elites', 'map_elites_line']
+    is_dqd = algorithm in ['cma_mega', 'cma_mega_adam']
 
     optimizer = create_optimizer(algorithm, dim, seed)
     archive = optimizer.archive

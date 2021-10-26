@@ -267,10 +267,8 @@ def run_experiment(algorithm,
     optimizer = create_optimizer(algorithm, dim, seed)
     archive = optimizer.archive
 
-    objective_prompt = 'A photo of Beyonce'
-    measure_prompts = ['A woman with long blonde hair.', 'A small child.']
-    #objective_prompt = 'Elon Musk with short hair.'
-    #measure_prompts = ['An man with blue eyes.', 'A person with red hair.']
+    objective_prompt = 'Elon Musk with short hair.'
+    measure_prompts = ['An man with blue eyes.', 'A person with red hair.']
     all_prompts = [objective_prompt] + measure_prompts
 
     best = -1000

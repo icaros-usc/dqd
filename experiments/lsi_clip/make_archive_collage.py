@@ -8,6 +8,9 @@ matplotlib.rcParams["font.family"] = 'serif'
 matplotlib.rcParams["font.serif"] = 'Palatino'
 matplotlib.rc('font', size=20)
 
+import os
+from pathlib import Path
+
 import torch
 import numpy as np
 import pandas as pd
@@ -21,7 +24,6 @@ archive_filename = 'logs/cma_mega_adam/trial_0/archive_010000.pkl'
 # min and max index for rows then columns (row major).
 # The archive is shape (200, 200) indexed from [0, 200).
 archive_dims = (200, 200)
-#archive_index_range = ((110, 200), (95, 200))
 archive_index_range = ((90, 200), (90, 200))
 # Measure ranges
 measure_ranges = ((0,6), (0,6))
@@ -31,6 +33,12 @@ picture_frequency = (8, 5)
 
 # Use the CPU while we are running exps.
 device = "cpu"
+
+# Uncomment to save all grid images separately.
+#gen_output_dir = os.path.join('grid_imgs')
+#logdir = Path(gen_output_dir)
+#if not logdir.is_dir():
+#    logdir.mkdir()
 
 g_synthesis.eval()
 g_synthesis.to(device)
@@ -68,6 +76,12 @@ for j in reversed(range(picture_frequency[1])):
 
             img = g_synthesis(dlatents)
             img = (img.clamp(-1, 1) + 1) / 2.0 # Normalize from [0,1]
+
+            # Uncomment to save all grid images separately.
+            #pil_img = img[0].permute(1, 2, 0).detach().cpu().numpy() * 255
+            #pil_img = Image.fromarray(pil_img.astype('uint8'))
+            #pil_img.save(os.path.join(gen_output_dir, f'{j}_{i}.png'))
+
             img = img[0].detach().cpu()
             imgs.append(img)
 
@@ -79,10 +93,8 @@ img_grid = make_grid(imgs, nrow=picture_frequency[0], padding=0)
 img_grid = np.transpose(img_grid.cpu().numpy(), (1,2,0))
 plt.imshow(img_grid)
 
-plt.xlabel("A woman with long blonde hair.")
-plt.ylabel("A small child.")
-#plt.xlabel("A man with blue eyes.")
-#plt.ylabel("A person with red hair.")
+plt.xlabel("A man with blue eyes.")
+plt.ylabel("A person with red hair.")
 
 def create_archive_tick_labels(axis_range, measure_range, dim, num_ticks):
     low_pos = axis_range[0] / dim

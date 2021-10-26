@@ -213,6 +213,8 @@ def run_experiment(algorithm,
                    outdir="logs",
                    log_freq=1,
                    log_arch_freq=1000,
+                   image_monitor=False,
+                   image_monitor_freq=5,
                    seed=None):
  
     # Create a directory for this specific trial.
@@ -221,15 +223,17 @@ def run_experiment(algorithm,
     if not logdir.is_dir():
         logdir.mkdir()
 
-    # Print all intermediate faces
-    gen_output_dir = os.path.join('generations')
-    logdir = Path(gen_output_dir)
-    if not logdir.is_dir():
-        logdir.mkdir()
-    gen_output_dir = os.path.join('generations', f"trial_{trial_id}")
-    logdir = Path(gen_output_dir)
-    if not logdir.is_dir():
-        logdir.mkdir()
+    # Create a directory for logging intermediate images if the monitor is on.
+    if image_monitor:
+        image_monitor_freq = max(1, image_monitor_freq)
+        gen_output_dir = os.path.join('generations')
+        logdir = Path(gen_output_dir)
+        if not logdir.is_dir():
+            logdir.mkdir()
+        gen_output_dir = os.path.join('generations', f"trial_{trial_id}")
+        logdir = Path(gen_output_dir)
+        if not logdir.is_dir():
+            logdir.mkdir()
 
     # Create a new summary file
     summary_filename = os.path.join(s_logdir, f"summary.csv")
@@ -326,7 +330,7 @@ def run_experiment(algorithm,
 
             print('best', best, best_gen)
 
-            if itr % 5 == 0:
+            if image_monitor and itr % image_monitor_freq == 0:
                 best_index = np.argmax(objs)
                 latent_code = latent_codes[best_index, :]
 
@@ -374,6 +378,8 @@ def lsi_main(algorithm,
              outdir='logs',
              log_freq=1,
              log_arch_freq=1000,
+             image_monitor=False,
+             image_monitor_freq=5,
              seed=None):
     """Experimental tool for the StyleGAN+CLIP LSI experiments.
 
@@ -385,6 +391,8 @@ def lsi_main(algorithm,
         outdir (str): Directory to save output.
         log_freq (int): Number of iterations between computing QD metrics and updating logs.
         log_arch_freq (int): Number of iterations between saving an archive and generating heatmaps.
+        image_monitor (bool): Flags if images should be saved every few iterations.
+        image_monitor_freq (int): Number of iterations between saving images.
         seed (int): Seed for the algorithm. By default, there is no seed.
     """
    
@@ -417,7 +425,10 @@ def lsi_main(algorithm,
         run_experiment(algorithm, cur_id, clip_model, g_synthesis,
                        device, dim=dim, init_pop=init_pop, itrs=itrs,
                        outdir=outdir, log_freq=log_freq, 
-                       log_arch_freq=log_arch_freq, seed=seed)
+                       log_arch_freq=log_arch_freq, 
+                       image_monitor=image_monitor, 
+                       image_monitor_freq=image_monitor_freq, 
+                       seed=seed)
      
 if __name__ == '__main__':
     fire.Fire(lsi_main)

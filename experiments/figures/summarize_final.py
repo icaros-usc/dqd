@@ -13,6 +13,7 @@ total_summary_filename = "summary.csv"
 experiment_folder = f"../{exp_name}/logs/"
 summary_path = experiment_folder + "*/trial_*/summary.csv"
 
+print(summary_path)
 all_data = [['Algorithm', 'Trial', 'QD-Score', 'Coverage', 'Maximum', 'Average']]
 for summary_file_path in glob.glob(summary_path):
     head, filename = path.split(summary_file_path)

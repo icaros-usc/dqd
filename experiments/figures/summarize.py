@@ -6,8 +6,6 @@ from os import path
 skip_len = 200
 total_summary_filename = 'summary.csv'
 experiment_folder = '../lin_proj/logs/'
-#experiment_folder = '../arm/logs/'
-#experiment_folder = '../lsi_clip/logs/'
 summary_path = experiment_folder + '*/trial_*/summary.csv'
 
 name_mapping = {
@@ -15,6 +13,7 @@ name_mapping = {
     'cma_mega_adam': 'CMA-MEGA (Adam)',
     'omg_mega': 'OMG-MEGA',
     'og_map_elites': 'OG-MAP-Elites',
+    'og_map_elites_line': 'OG-MAP-Elites (line)',
     'cma_me_imp': 'CMA-ME',
     'map_elites': 'MAP-Elites',
     'map_elites_line': 'MAP-Elites (line)',
@@ -24,6 +23,7 @@ algo_order = [
     'CMA-MEGA (Adam)',
     'CMA-MEGA',
     'OMG-MEGA',
+    'OG-MAP-Elites (line)',
     'OG-MAP-Elites',
     'CMA-ME',
     'MAP-Elites (line)',

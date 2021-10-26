@@ -9,7 +9,7 @@ from os import path
 
 objective_range = (0, 100)
 objective_resolution = 101
-archive_resolution = (200, 200)
+archive_resolution = (100, 100)
 num_cells = 1
 for r in archive_resolution:
     num_cells *= r
@@ -17,15 +17,16 @@ for r in archive_resolution:
 skip_len = 200
 archive_summary_filename = 'cdf.csv'
 experiment_folder = '../lin_proj/logs/'
-#experiment_folder = '../arm/arm_logs/'
-#experiment_folder = '../lsi_clip/lsi_logs/'
-archive_path = experiment_folder + '*/trial_*/archive_10000.pkl'
+#experiment_folder = '../arm/logs/'
+#experiment_folder = '../lsi_clip/logs/'
+archive_path = experiment_folder + '*/trial_*/archive_00010000.pkl'
 
 name_mapping = {
     'cma_mega': 'CMA-MEGA',
     'cma_mega_adam': 'CMA-MEGA (Adam)',
     'omg_mega': 'OMG-MEGA',
     'og_map_elites': 'OG-MAP-Elites',
+    'og_map_elites_line': 'OG-MAP-Elites (line)',
     'cma_me_imp': 'CMA-ME',
     'map_elites': 'MAP-Elites',
     'map_elites_line': 'MAP-Elites (line)',
@@ -36,6 +37,7 @@ algo_order = [
     'CMA-MEGA',
     'OMG-MEGA',
     'OG-MAP-Elites',
+    'OG-MAP-Elites (line)',
     'CMA-ME',
     'MAP-Elites (line)',
     'MAP-Elites',

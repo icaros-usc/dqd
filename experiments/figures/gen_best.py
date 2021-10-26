@@ -17,9 +17,10 @@ palette ={
     "CMA-MEGA (Adam)": "C1", 
     "OMG-MEGA": "C2", 
     "OG-MAP-Elites": "C3",
-    "CMA-ME": "C4",
-    "MAP-Elites": "C5",
-    "MAP-Elites (line)": "C6",
+    "OG-MAP-Elites (line)": "C4",
+    "CMA-ME": "C5",
+    "MAP-Elites": "C6",
+    "MAP-Elites (line)": "C7",
 }
 
 sns.set(font_scale=3)

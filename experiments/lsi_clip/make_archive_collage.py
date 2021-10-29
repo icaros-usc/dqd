@@ -19,7 +19,7 @@ from stylegan_models import g_all, g_synthesis, g_mapping
 from PIL import Image
 
 # Note that only final archives encode latent codes.
-archive_filename = 'logs/cma_mega_adam/trial_0/archive_010000.pkl'
+archive_filename = 'logs/cma_mega_adam/trial_0/archive_00010000.pkl'
 
 # min and max index for rows then columns (row major).
 # The archive is shape (200, 200) indexed from [0, 200).
@@ -84,6 +84,8 @@ for j in reversed(range(picture_frequency[1])):
 
             img = img[0].detach().cpu()
             imgs.append(img)
+        else:
+            imgs.append(torch.zeros((3,1024,1024)))
 
 import matplotlib.pyplot as plt
 from torchvision.utils import make_grid
